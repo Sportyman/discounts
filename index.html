@@ -57,7 +57,7 @@
             background-color: lightgray;
         }
         .final-price {
-            font-size: 30px;
+            font-size: 36px;
             font-weight: bold;
             margin-top: 20px;
         }
@@ -65,6 +65,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            margin-top: 10px;
         }
         .keyboard button {
             width: 30%;
@@ -73,9 +74,21 @@
             font-size: 18px;
             cursor: pointer;
         }
+        .reset-button {
+            width: 100%;
+            background-color: #ff6666;
+            color: white;
+            font-size: 20px;
+        }
+        .shortcut-button {
+            margin-bottom: 10px;
+            background-color: #007aff;
+            color: white;
+        }
     </style>
 </head>
 <body>
+    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <div class="container">
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="discounts">
@@ -86,6 +99,7 @@
         <div class="final-price">מחיר סופי: <span id="finalPrice">0</span> ₪</div>
     </div>
     <div class="keyboard">
+        <button class="reset-button" onclick="clearPrice()">אפס</button>
         <button onclick="addToPrice(1)">1</button>
         <button onclick="addToPrice(2)">2</button>
         <button onclick="addToPrice(3)">3</button>
@@ -95,7 +109,7 @@
         <button onclick="addToPrice(7)">7</button>
         <button onclick="addToPrice(8)">8</button>
         <button onclick="addToPrice(9)">9</button>
-        <button onclick="clearPrice()">⌫</button>
+        <button onclick="deleteLastDigit()">⌫</button>
         <button onclick="addToPrice(0)">0</button>
         <button onclick="addToPrice('.')">.</button>
     </div>
@@ -105,6 +119,12 @@
         
         function addToPrice(num) {
             document.getElementById('price').value += num;
+            updateDiscounts();
+        }
+        
+        function deleteLastDigit() {
+            let price = document.getElementById('price').value;
+            document.getElementById('price').value = price.slice(0, -1);
             updateDiscounts();
         }
         
@@ -162,6 +182,10 @@
             });
             
             document.getElementById('finalPrice').innerText = finalPrice.toFixed(2);
+        }
+        
+        function createShortcut() {
+            alert('כדי להוסיף קיצור דרך, פתח את תפריט הדפדפן ובחר "הוסף למסך הבית".');
         }
     </script>
 </body>
