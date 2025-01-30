@@ -36,7 +36,7 @@
             justify-content: center;
             margin-top: 10px;
             gap: 5px;
-            flex-direction: row-reverse; /* שינוי סדר ההנחות מימין לשמאל */
+            flex-direction: row-reverse;
         }
         .discount-block {
             background-color: lightblue;
@@ -53,7 +53,7 @@
         .discount-number {
             position: absolute;
             top: 2px;
-            right: 5px; /* מספר בפינה העליונה השמאלית של כל קובייה */
+            right: 5px;
             font-size: 12px;
             font-weight: bold;
             color: black;
@@ -109,7 +109,7 @@
 </head>
 <body>
     <div class="container">
-        <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
+        <input type="text" id="price" placeholder="הזן מחיר" readonly>
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
             <button onclick="addDiscount()">הוסף הנחה</button>
@@ -119,68 +119,33 @@
     </div>
     <div class="keyboard-container">
         <div class="keyboard">
-            <button onclick="addToPrice(1)">1</button>
-            <button onclick="addToPrice(2)">2</button>
-            <button onclick="addToPrice(3)">3</button>
-            <button onclick="addToPrice(4)">4</button>
-            <button onclick="addToPrice(5)">5</button>
-            <button onclick="addToPrice(6)">6</button>
-            <button onclick="addToPrice(7)">7</button>
-            <button onclick="addToPrice(8)">8</button>
-            <button onclick="addToPrice(9)">9</button>
+            <button onclick="addToPrice('1')">1</button>
+            <button onclick="addToPrice('2')">2</button>
+            <button onclick="addToPrice('3')">3</button>
+            <button onclick="addToPrice('4')">4</button>
+            <button onclick="addToPrice('5')">5</button>
+            <button onclick="addToPrice('6')">6</button>
+            <button onclick="addToPrice('7')">7</button>
+            <button onclick="addToPrice('8')">8</button>
+            <button onclick="addToPrice('9')">9</button>
             <button onclick="deleteLastDigit()">⌫</button>
-            <button onclick="addToPrice(0)">0</button>
+            <button onclick="addToPrice('0')">0</button>
             <button onclick="addToPrice('.')">.</button>
         </div>
         <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     </div>
     <script>
-        let discounts = [];
-        function addDiscount() {
-            let discountInput = document.getElementById('discount');
-            let discountContainer = document.getElementById('discountContainer');
-            let discountValue = parseFloat(discountInput.value);
-            if (!isNaN(discountValue) && discountValue > 0) {
-                let discountBlock = document.createElement('div');
-                discountBlock.classList.add('discount-block');
-                discountBlock.innerText = discountValue + '%';
-                
-                let discountNumber = document.createElement('span');
-                discountNumber.classList.add('discount-number');
-                discountNumber.innerText = (discountContainer.children.length + 1);
-                discountBlock.appendChild(discountNumber);
-                
-                let removeButton = document.createElement('button');
-                removeButton.innerText = 'X';
-                removeButton.classList.add('remove-discount');
-                removeButton.onclick = function() {
-                    discountContainer.removeChild(discountBlock);
-                    discounts = discounts.filter(d => d !== discountValue);
-                    updateDiscounts();
-                };
-                
-                discountBlock.onclick = function() {
-                    discountBlock.classList.toggle('inactive');
-                    updateDiscounts();
-                };
-                
-                discountBlock.appendChild(removeButton);
-                discountContainer.insertBefore(discountBlock, discountContainer.firstChild);
-                discounts.push(discountValue);
-                updateDiscounts();
-                discountInput.value = '';
-            }
+        function addToPrice(num) {
+            let priceInput = document.getElementById('price');
+            if (num === '.' && priceInput.value.includes('.')) return;
+            priceInput.value += num;
+            updateDiscounts();
         }
         
-        function updateDiscounts() {
-            let price = parseFloat(document.getElementById('price').value) || 0;
-            document.querySelectorAll('.discount-block').forEach(block => {
-                let discount = parseFloat(block.innerText);
-                if (!block.classList.contains('inactive')) {
-                    price -= price * (discount / 100);
-                }
-            });
-            document.getElementById('finalPrice').innerText = price.toFixed(2);
+        function deleteLastDigit() {
+            let priceInput = document.getElementById('price');
+            priceInput.value = priceInput.value.slice(0, -1);
+            updateDiscounts();
         }
     </script>
 </body>
