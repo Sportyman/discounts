@@ -23,11 +23,28 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
+            position: relative;
         }
-        input, button {
+        .input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        input {
             font-size: 18px;
-            margin: 5px;
             padding: 10px;
+            width: 70%;
+            margin: 5px;
+        }
+        .clear-button {
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
         }
         .discounts {
             display: flex;
@@ -74,13 +91,6 @@
             font-size: 18px;
             cursor: pointer;
         }
-        .reset-button {
-            width: 100%;
-            background-color: #ff6666;
-            color: white;
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
         .shortcut-button {
             margin-top: auto;
             background-color: #007aff;
@@ -93,7 +103,10 @@
 </head>
 <body>
     <div class="container">
-        <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
+        <div class="input-container">
+            <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
+            <button class="clear-button" onclick="clearPrice()">אפס</button>
+        </div>
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
             <button onclick="addDiscount()">הוסף הנחה</button>
@@ -102,7 +115,6 @@
         <div class="final-price">מחיר סופי: <span id="finalPrice">0</span> ₪</div>
     </div>
     <div class="keyboard">
-        <button class="reset-button" onclick="clearPrice()">אפס</button>
         <button onclick="addToPrice(1)">1</button>
         <button onclick="addToPrice(2)">2</button>
         <button onclick="addToPrice(3)">3</button>
@@ -117,76 +129,5 @@
         <button onclick="addToPrice('.')">.</button>
     </div>
     <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
-    <script>
-        let discounts = [];
-        let activeDiscounts = [];
-        
-        function addToPrice(num) {
-            document.getElementById('price').value += num;
-            updateDiscounts();
-        }
-        
-        function deleteLastDigit() {
-            let price = document.getElementById('price').value;
-            document.getElementById('price').value = price.slice(0, -1);
-            updateDiscounts();
-        }
-        
-        function clearPrice() {
-            document.getElementById('price').value = '';
-            updateDiscounts();
-        }
-        
-        function addDiscount() {
-            let discountValue = parseFloat(document.getElementById('discount').value);
-            if (!isNaN(discountValue) && discountValue > 0) {
-                discounts.push(discountValue);
-                activeDiscounts.push(true);
-                updateDiscounts();
-            }
-        }
-        
-        function updateDiscounts() {
-            let container = document.getElementById('discountContainer');
-            container.innerHTML = '';
-            let price = parseFloat(document.getElementById('price').value) || 0;
-            
-            discounts.forEach((discount, index) => {
-                let div = document.createElement('div');
-                div.classList.add('discount-block');
-                if (!activeDiscounts[index]) {
-                    div.classList.add('inactive');
-                }
-                div.innerText = `${discount}%`;
-                
-                let removeButton = document.createElement('button');
-                removeButton.innerText = 'X';
-                removeButton.classList.add('remove-discount');
-                removeButton.onclick = function(event) {
-                    event.stopPropagation();
-                    discounts.splice(index, 1);
-                    activeDiscounts.splice(index, 1);
-                    updateDiscounts();
-                };
-                
-                div.onclick = function() {
-                    activeDiscounts[index] = !activeDiscounts[index];
-                    updateDiscounts();
-                };
-                
-                div.appendChild(removeButton);
-                container.appendChild(div);
-            });
-            
-            let finalPrice = price;
-            discounts.forEach((discount, index) => {
-                if (activeDiscounts[index]) {
-                    finalPrice -= (finalPrice * (discount / 100));
-                }
-            });
-            
-            document.getElementById('finalPrice').innerText = finalPrice.toFixed(2);
-        }
-    </script>
 </body>
 </html>
