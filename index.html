@@ -37,24 +37,26 @@
             gap: 5px;
         }
         .discount-block {
-            background-color: lightblue;
+            background-color: blue;
+            color: white;
             padding: 10px;
             border-radius: 5px;
             display: flex;
             align-items: center;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+        .discount-block.inactive {
+            background-color: red;
         }
         .remove-discount {
-            background: red;
-            color: white;
+            background: white;
+            color: black;
             border: none;
             padding: 5px;
             margin-left: 5px;
             cursor: pointer;
             border-radius: 50%;
-        }
-        .inactive {
-            background-color: lightgray;
         }
         .final-price {
             font-size: 40px;
@@ -89,13 +91,6 @@
             font-size: 18px;
             cursor: pointer;
         }
-        .shortcut-button {
-            background-color: #007aff;
-            color: white;
-            width: 90%;
-            padding: 15px;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
@@ -125,24 +120,21 @@
             <button onclick="addToPrice('.')">.</button>
         </div>
     </div>
-    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <script>
+        let discounts = [];
         function addToPrice(num) {
             document.getElementById('price').value += num;
             updateDiscounts();
         }
-        
         function deleteLastDigit() {
             let price = document.getElementById('price').value;
             document.getElementById('price').value = price.slice(0, -1);
             updateDiscounts();
         }
-        
         function clearPrice() {
             document.getElementById('price').value = '';
             updateDiscounts();
         }
-        
         function addDiscount() {
             let discountValue = parseFloat(document.getElementById('discount').value);
             if (!isNaN(discountValue) && discountValue > 0) {
@@ -150,9 +142,36 @@
                 let discountBlock = document.createElement('div');
                 discountBlock.classList.add('discount-block');
                 discountBlock.innerText = discountValue + '%';
+                
+                let removeButton = document.createElement('button');
+                removeButton.innerText = 'X';
+                removeButton.classList.add('remove-discount');
+                removeButton.onclick = function(event) {
+                    event.stopPropagation();
+                    discountContainer.removeChild(discountBlock);
+                    discounts.splice(discounts.indexOf(discountValue), 1);
+                    updateDiscounts();
+                };
+                
+                discountBlock.onclick = function() {
+                    discountBlock.classList.toggle('inactive');
+                    updateDiscounts();
+                };
+                
+                discountBlock.appendChild(removeButton);
                 discountContainer.appendChild(discountBlock);
+                discounts.push(discountValue);
                 updateDiscounts();
             }
+        }
+        function updateDiscounts() {
+            let price = parseFloat(document.getElementById('price').value) || 0;
+            discounts.forEach(discount => {
+                if (!document.querySelector('.inactive')) {
+                    price -= price * (discount / 100);
+                }
+            });
+            document.getElementById('finalPrice').innerText = price.toFixed(2);
         }
     </script>
 </body>
