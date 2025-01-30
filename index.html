@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון הנחות - גרסה 1.4</title>
+    <title>מחשבון הנחות - גרסה 1.6</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 5px;
-            min-height: 40px; /* שומר מקום לקוביות ההנחות */
+            min-height: 50px; /* שומר מקום לקוביות ההנחות */
         }
         .discount-block {
             background-color: lightblue;
@@ -69,7 +69,7 @@
             align-items: center;
             width: 100%;
             position: relative;
-            margin-top: -30px; /* מקרב את המקלדת למחיר הסופי */
+            margin-top: -50px; /* מקרב את המקלדת למחיר הסופי */
         }
         .reset-button {
             width: 90%;
@@ -113,7 +113,7 @@
 </head>
 <body>
     <div class="container">
-        <span style="position: absolute; top: 5px; left: 10px; font-size: 12px; color: gray;">גרסה 1.4</span>
+        <span style="position: absolute; top: 5px; left: 10px; font-size: 12px; color: gray;">גרסה 1.6</span>
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
