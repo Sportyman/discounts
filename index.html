@@ -59,13 +59,13 @@
         .final-price {
             font-size: 36px;
             font-weight: bold;
-            margin-top: 20px;
+            margin: 10px 0;
         }
         .keyboard {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 5px;
         }
         .keyboard button {
             width: 30%;
@@ -79,16 +79,19 @@
             background-color: #ff6666;
             color: white;
             font-size: 20px;
+            margin-bottom: 5px;
         }
         .shortcut-button {
-            margin-bottom: 10px;
+            margin-top: auto;
             background-color: #007aff;
             color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <div class="container">
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="discounts">
@@ -113,6 +116,7 @@
         <button onclick="addToPrice(0)">0</button>
         <button onclick="addToPrice('.')">.</button>
     </div>
+    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <script>
         let discounts = [];
         let activeDiscounts = [];
@@ -182,10 +186,6 @@
             });
             
             document.getElementById('finalPrice').innerText = finalPrice.toFixed(2);
-        }
-        
-        function createShortcut() {
-            alert('כדי להוסיף קיצור דרך, פתח את תפריט הדפדפן ובחר "הוסף למסך הבית".');
         }
     </script>
 </body>
