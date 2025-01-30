@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>מחשבון הנחות</title>
     <style>
+        /* עיצוב כללי של הדף */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -16,6 +17,8 @@
             background-color: #f4f4f4;
             overflow: hidden;
         }
+        
+        /* מיכל ראשי */
         .container {
             background: white;
             padding: 15px;
@@ -25,17 +28,23 @@
             max-width: 400px;
             text-align: center;
         }
+        
+        /* שדות קלט וכפתורים */
         input, button {
             font-size: 18px;
             margin: 5px;
             padding: 10px;
         }
+        
+        /* אזור ההנחות */
         .discounts {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 5px;
         }
+        
+        /* עיצוב בלוק הנחה - פעיל */
         .discount-block {
             background-color: blue;
             color: white;
@@ -46,9 +55,13 @@
             cursor: pointer;
             transition: background 0.3s;
         }
+        
+        /* עיצוב בלוק הנחה - כבוי */
         .discount-block.inactive {
             background-color: red;
         }
+        
+        /* כפתור מחיקת הנחה */
         .remove-discount {
             background: white;
             color: black;
@@ -58,17 +71,23 @@
             cursor: pointer;
             border-radius: 50%;
         }
+        
+        /* תצוגת המחיר הסופי */
         .final-price {
             font-size: 40px;
             font-weight: bold;
             margin: 5px 0;
         }
+        
+        /* מיכל המקלדת */
         .keyboard-container {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+        
+        /* כפתור איפוס */
         .reset-button {
             width: 90%;
             background-color: #ff6666;
@@ -78,12 +97,16 @@
             margin-bottom: 5px;
             text-align: center;
         }
+        
+        /* עיצוב המקלדת */
         .keyboard {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             width: 90%;
         }
+        
+        /* כפתורי המקלדת */
         .keyboard button {
             width: 30%;
             margin: 5px;
@@ -94,6 +117,7 @@
     </style>
 </head>
 <body>
+    <!-- קלט מחיר -->
     <div class="container">
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="discounts">
@@ -103,6 +127,8 @@
         <div id="discountContainer" class="discounts"></div>
         <div class="final-price">מחיר סופי: <span id="finalPrice">0</span> ₪</div>
     </div>
+    
+    <!-- מקלדת מספרים -->
     <div class="keyboard-container">
         <button class="reset-button" onclick="clearPrice()">אפס</button>
         <div class="keyboard">
@@ -120,56 +146,44 @@
             <button onclick="addToPrice('.')">.</button>
         </div>
     </div>
+    
     <script>
+        /* משתנה לאחסון ההנחות */
         let discounts = [];
+        
+        /* פונקציה להוספת מספר למחיר */
         function addToPrice(num) {
             document.getElementById('price').value += num;
             updateDiscounts();
         }
+        
+        /* מחיקת תו אחד מהמחיר */
         function deleteLastDigit() {
             let price = document.getElementById('price').value;
             document.getElementById('price').value = price.slice(0, -1);
             updateDiscounts();
         }
+        
+        /* איפוס המחיר */
         function clearPrice() {
             document.getElementById('price').value = '';
             updateDiscounts();
         }
+        
+        /* הוספת הנחה */
         function addDiscount() {
             let discountValue = parseFloat(document.getElementById('discount').value);
             if (!isNaN(discountValue) && discountValue > 0) {
-                let discountContainer = document.getElementById('discountContainer');
-                let discountBlock = document.createElement('div');
-                discountBlock.classList.add('discount-block');
-                discountBlock.innerText = discountValue + '%';
-                
-                let removeButton = document.createElement('button');
-                removeButton.innerText = 'X';
-                removeButton.classList.add('remove-discount');
-                removeButton.onclick = function(event) {
-                    event.stopPropagation();
-                    discountContainer.removeChild(discountBlock);
-                    discounts.splice(discounts.indexOf(discountValue), 1);
-                    updateDiscounts();
-                };
-                
-                discountBlock.onclick = function() {
-                    discountBlock.classList.toggle('inactive');
-                    updateDiscounts();
-                };
-                
-                discountBlock.appendChild(removeButton);
-                discountContainer.appendChild(discountBlock);
                 discounts.push(discountValue);
                 updateDiscounts();
             }
         }
+        
+        /* עדכון מחיר סופי לאחר הנחות */
         function updateDiscounts() {
             let price = parseFloat(document.getElementById('price').value) || 0;
             discounts.forEach(discount => {
-                if (!document.querySelector('.inactive')) {
-                    price -= price * (discount / 100);
-                }
+                price -= price * (discount / 100);
             });
             document.getElementById('finalPrice').innerText = price.toFixed(2);
         }
