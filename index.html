@@ -81,14 +81,20 @@
             font-size: 20px;
         }
         .shortcut-button {
-            margin-bottom: 10px;
+            position: fixed;
+            bottom: 10px;
+            width: 90%;
+            max-width: 400px;
             background-color: #007aff;
             color: white;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <div class="container">
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="discounts">
@@ -113,77 +119,8 @@
         <button onclick="addToPrice(0)">0</button>
         <button onclick="addToPrice('.')">.</button>
     </div>
+    <button class="shortcut-button" onclick="createShortcut()">📲 הוסף קיצור דרך</button>
     <script>
-        let discounts = [];
-        let activeDiscounts = [];
-        
-        function addToPrice(num) {
-            document.getElementById('price').value += num;
-            updateDiscounts();
-        }
-        
-        function deleteLastDigit() {
-            let price = document.getElementById('price').value;
-            document.getElementById('price').value = price.slice(0, -1);
-            updateDiscounts();
-        }
-        
-        function clearPrice() {
-            document.getElementById('price').value = '';
-            updateDiscounts();
-        }
-        
-        function addDiscount() {
-            let discountValue = parseFloat(document.getElementById('discount').value);
-            if (!isNaN(discountValue) && discountValue > 0) {
-                discounts.push(discountValue);
-                activeDiscounts.push(true);
-                updateDiscounts();
-            }
-        }
-        
-        function updateDiscounts() {
-            let container = document.getElementById('discountContainer');
-            container.innerHTML = '';
-            let price = parseFloat(document.getElementById('price').value) || 0;
-            
-            discounts.forEach((discount, index) => {
-                let div = document.createElement('div');
-                div.classList.add('discount-block');
-                if (!activeDiscounts[index]) {
-                    div.classList.add('inactive');
-                }
-                div.innerText = `${discount}%`;
-                
-                let removeButton = document.createElement('button');
-                removeButton.innerText = 'X';
-                removeButton.classList.add('remove-discount');
-                removeButton.onclick = function(event) {
-                    event.stopPropagation();
-                    discounts.splice(index, 1);
-                    activeDiscounts.splice(index, 1);
-                    updateDiscounts();
-                };
-                
-                div.onclick = function() {
-                    activeDiscounts[index] = !activeDiscounts[index];
-                    updateDiscounts();
-                };
-                
-                div.appendChild(removeButton);
-                container.appendChild(div);
-            });
-            
-            let finalPrice = price;
-            discounts.forEach((discount, index) => {
-                if (activeDiscounts[index]) {
-                    finalPrice -= (finalPrice * (discount / 100));
-                }
-            });
-            
-            document.getElementById('finalPrice').innerText = finalPrice.toFixed(2);
-        }
-        
         function createShortcut() {
             alert('כדי להוסיף קיצור דרך, פתח את תפריט הדפדפן ובחר "הוסף למסך הבית".');
         }
