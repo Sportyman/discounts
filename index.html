@@ -91,7 +91,7 @@
         }
 
         .final-price span {
-            color: #007aff; /* צבע כחול רק לסכום */
+            color: #007aff; /* צבע כחול לסכום ולסימן ₪ */
         }
 
         .keyboard-container {
@@ -215,7 +215,7 @@
         </div>
         <div id="discountContainer" class="discounts"></div>
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
-        <div class="final-price">מחיר סופי: <span id="finalPrice">0</span> ₪</div>
+        <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
     </div>
     <div class="keyboard-container">
         <button class="reset-button" onclick="resetPrice()">איפוס מחיר</button>
@@ -309,7 +309,7 @@
                     finalPrice *= (1 - discount / 100); // הנחה מצטברת
                 }
             });
-            document.getElementById('finalPrice').innerText = finalPrice.toFixed(2);
+            document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
         }
 
         function addToPrice(value) {
