@@ -203,12 +203,13 @@
 </head>
 <body>
     <div class="container">
-        <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
+        <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
             <button onclick="addDiscount()">הוסף הנחה</button>
         </div>
         <div id="discountContainer" class="discounts"></div>
+        <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="final-price">מחיר סופי: <span id="finalPrice">0</span> ₪</div>
     </div>
     <div class="keyboard-container">
