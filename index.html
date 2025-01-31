@@ -5,39 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחשבון הנחות</title>
     <style>
+        /* עיצוב כללי */
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            height: 100vh;
+            justify-content: center;
+            min-height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
+            padding: 20px;
+            box-sizing: border-box;
         }
+
         .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             text-align: center;
-            flex: 1;
         }
+
         input, button {
-            font-size: 18px;
+            font-size: 1rem;
             margin: 5px;
             padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
         }
+
         .discounts {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start; /* הכפתורים מתחילים מימין */
             margin-top: 10px;
             gap: 5px;
-            flex-direction: row-reverse; /* שינוי סדר ההנחות מימין לשמאל */
+            direction: rtl; /* כיוון מימין לשמאל */
         }
+
         .discount-block {
             background-color: lightblue;
             padding: 10px;
@@ -46,18 +54,24 @@
             align-items: center;
             cursor: pointer;
             position: relative;
+            width: calc(20% - 10px); /* גודל קבוע לכל כפתור */
+            box-sizing: border-box;
+            justify-content: center;
         }
+
         .inactive {
             background-color: lightgray;
         }
+
         .discount-number {
             position: absolute;
             top: 2px;
-            left: 5px; /* מספר בפינה העליונה השמאלית של כל קובייה */
-            font-size: 12px;
+            left: 5px;
+            font-size: 0.75rem;
             font-weight: bold;
             color: black;
         }
+
         .remove-discount {
             background: red;
             color: white;
@@ -66,54 +80,87 @@
             margin-left: 5px;
             cursor: pointer;
             border-radius: 50%;
+            font-size: 0.75rem;
         }
+
         .final-price {
-            font-size: 36px;
+            font-size: 2rem;
             font-weight: bold;
             margin-top: 20px;
         }
+
         .keyboard-container {
             width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex: 1;
+            margin-top: 20px;
         }
+
         .keyboard {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            width: 90%;
-            max-width: 400px;
+            gap: 5px;
+            width: 100%;
         }
+
         .keyboard button {
-            width: 30%;
-            margin: 5px;
+            flex: 1 1 calc(33.333% - 10px);
             padding: 15px;
-            font-size: 18px;
+            font-size: 1rem;
             cursor: pointer;
         }
+
         .shortcut-button {
-            position: relative;
-            width: 90%;
-            max-width: 400px;
+            width: 100%;
             background-color: #007aff;
             color: white;
             padding: 15px;
-            font-size: 18px;
+            font-size: 1rem;
             border-radius: 5px;
             text-align: center;
             margin-bottom: 10px;
+            cursor: pointer;
         }
+
         .reset-button {
             background-color: #ff3b30;
             color: white;
             border: none;
             padding: 10px;
-            font-size: 16px;
+            font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
             margin-bottom: 10px;
+            width: 100%;
+        }
+
+        /* Media Queries עבור מסכים קטנים מאוד */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            input, button {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .final-price {
+                font-size: 1.5rem;
+            }
+
+            .keyboard button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .shortcut-button, .reset-button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -147,12 +194,19 @@
     </div>
     <script>
         let discounts = [];
+        const MAX_DISCOUNTS = 5; // מגבלה של 5 הנחות
 
         function addDiscount() {
             let discountInput = document.getElementById('discount');
             let discountValue = parseFloat(discountInput.value);
+            let discountContainer = document.getElementById('discountContainer');
+
+            if (discountContainer.children.length >= MAX_DISCOUNTS) {
+                alert('ניתן להוסיף עד 5 הנחות בלבד.');
+                return;
+            }
+
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                let discountContainer = document.getElementById('discountContainer');
                 let discountBlock = document.createElement('div');
                 discountBlock.classList.add('discount-block');
                 discountBlock.innerText = discountValue + '%';
@@ -177,7 +231,7 @@
                 };
 
                 discountBlock.appendChild(removeButton);
-                discountContainer.insertBefore(discountBlock, discountContainer.firstChild);
+                discountContainer.appendChild(discountBlock);
                 discounts.push(discountValue);
                 updateDiscounts();
                 discountInput.value = '';
@@ -211,8 +265,8 @@
         }
 
         function resetPrice() {
-            document.getElementById('price').value = ''; // מאפס את שדה המחיר
-            updateDiscounts(); // מעדכן את המחיר הסופי ל-0
+            document.getElementById('price').value = '';
+            updateDiscounts();
         }
 
         function createShortcut() {
