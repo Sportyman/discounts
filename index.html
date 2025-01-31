@@ -88,6 +88,7 @@
             font-size: 2rem;
             font-weight: bold;
             margin: 10px 0; /* צמצום הרווחים */
+            color: #007aff; /* צבע כחול */
         }
 
         .keyboard-container {
@@ -291,7 +292,9 @@
                 discounts.push(discountValue);
                 updateDiscounts();
                 discountInput.value = '';
-            } 
+            } else {
+                alert('אנא הזן ערך הנחה בין 0 ל-100.');
+            }
         }
 
         function updateDiscounts() {
