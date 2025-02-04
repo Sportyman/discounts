@@ -141,6 +141,26 @@
             width: 100%;
         }
 
+        /* כפתורי הנחות קבועים */
+        .fixed-discounts {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .fixed-discounts button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 calc(25% - 10px); /* 4 כפתורים בשורה */
+        }
+
         /* הודעת הוראות להוספת קיצור דרך */
         .instructions-modal {
             display: none;
@@ -203,11 +223,28 @@
                 padding: 10px;
                 font-size: 0.9rem;
             }
+
+            .fixed-discounts button {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- כפתורי הנחות קבועים -->
+        <div class="fixed-discounts">
+            <button onclick="addFixedDiscount(10)">10%</button>
+            <button onclick="addFixedDiscount(20)">20%</button>
+            <button onclick="addFixedDiscount(30)">30%</button>
+            <button onclick="addFixedDiscount(40)">40%</button>
+            <button onclick="addFixedDiscount(50)">50%</button>
+            <button onclick="addFixedDiscount(60)">60%</button>
+            <button onclick="addFixedDiscount(70)">70%</button>
+            <button onclick="addFixedDiscount(80)">80%</button>
+        </div>
+
         <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
@@ -254,52 +291,75 @@
         let discounts = [];
         const MAX_DISCOUNTS = 5; // מגבלה של 5 הנחות
 
+        // פונקציה להוספת הנחה קבועה
+        function addFixedDiscount(discountValue) {
+            let discountContainer = document.getElementById('discountContainer');
+
+            // בדיקה שלא עוברים את המגבלה של 5 הנחות
+            if (discountContainer.children.length >= MAX_DISCOUNTS) {
+                alert('ניתן להוסיף עד 5 הנחות בלבד.');
+                return;
+            }
+
+            // יצירת בלוק הנחה חדש
+            let discountBlock = document.createElement('div');
+            discountBlock.classList.add('discount-block');
+            discountBlock.innerText = discountValue + '%';
+
+            // הוספת מספר ההנחה בפינה השמאלית העליונה
+            let discountNumber = document.createElement('span');
+            discountNumber.classList.add('discount-number');
+            discountNumber.innerText = (discountContainer.children.length + 1);
+            discountBlock.appendChild(discountNumber);
+
+            // כפתור למחיקת ההנחה
+            let removeButton = document.createElement('button');
+            removeButton.innerText = 'X';
+            removeButton.classList.add('remove-discount');
+            removeButton.onclick = function () {
+                discountContainer.removeChild(discountBlock);
+                discounts = discounts.filter(d => d !== discountValue);
+                updateDiscounts();
+            };
+
+            // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
+            discountBlock.onclick = function () {
+                if (event.target !== removeButton) {
+                    discountBlock.classList.toggle('inactive');
+                    updateDiscounts();
+                }
+            };
+
+            // הוספת כפתור המחיקה לבלוק ההנחה
+            discountBlock.appendChild(removeButton);
+
+            // הוספת הבלוק לרשימת ההנחות
+            discountContainer.appendChild(discountBlock);
+            discounts.push(discountValue);
+            updateDiscounts();
+        }
+
+        // פונקציה להוספת הנחה ידנית
         function addDiscount() {
             let discountInput = document.getElementById('discount');
             let discountValue = parseFloat(discountInput.value);
             let discountContainer = document.getElementById('discountContainer');
 
+            // בדיקות תקינות
             if (discountContainer.children.length >= MAX_DISCOUNTS) {
                 alert('ניתן להוסיף עד 5 הנחות בלבד.');
                 return;
             }
 
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                let discountBlock = document.createElement('div');
-                discountBlock.classList.add('discount-block');
-                discountBlock.innerText = discountValue + '%';
-
-                let discountNumber = document.createElement('span');
-                discountNumber.classList.add('discount-number');
-                discountNumber.innerText = (discountContainer.children.length + 1);
-                discountBlock.appendChild(discountNumber);
-
-                let removeButton = document.createElement('button');
-                removeButton.innerText = 'X';
-                removeButton.classList.add('remove-discount');
-                removeButton.onclick = function () {
-                    discountContainer.removeChild(discountBlock);
-                    discounts = discounts.filter(d => d !== discountValue);
-                    updateDiscounts();
-                };
-
-                discountBlock.onclick = function () {
-                    if (event.target !== removeButton) {
-                        discountBlock.classList.toggle('inactive');
-                        updateDiscounts();
-                    }
-                };
-
-                discountBlock.appendChild(removeButton);
-                discountContainer.appendChild(discountBlock);
-                discounts.push(discountValue);
-                updateDiscounts();
-                discountInput.value = '';
+                addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו עבור הנחות קבועות
+                discountInput.value = ''; // איפוס תיבת ההזנה
             } else {
                 alert('אנא הזן ערך הנחה בין 0 ל-100.');
             }
         }
 
+        // פונקציה לעדכון המחיר הסופי
         function updateDiscounts() {
             let price = parseFloat(document.getElementById('price').value) || 0;
             let finalPrice = price;
@@ -312,27 +372,32 @@
             document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
         }
 
+        // פונקציה להוספת ספרה למחיר
         function addToPrice(value) {
             let priceInput = document.getElementById('price');
             priceInput.value += value;
             updateDiscounts();
         }
 
+        // פונקציה למחיקת הספרה האחרונה
         function deleteLastDigit() {
             let priceInput = document.getElementById('price');
             priceInput.value = priceInput.value.slice(0, -1);
             updateDiscounts();
         }
 
+        // פונקציה לאיפוס המחיר
         function resetPrice() {
             document.getElementById('price').value = '';
             updateDiscounts();
         }
 
+        // פונקציה להצגת הוראות להוספת קיצור דרך
         function showInstructions() {
             document.getElementById('instructionsModal').style.display = 'flex';
         }
 
+        // פונקציה לסגירת הוראות
         function closeInstructions() {
             document.getElementById('instructionsModal').style.display = 'none';
         }
