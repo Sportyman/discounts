@@ -141,11 +141,10 @@
             width: 100%;
         }
 
-        /* כפתורי הנחות קבועים */
+        /* כפתורי הנחות קבועים - גריד של 8 עמודות */
         .fixed-discounts {
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
             gap: 5px;
             margin-bottom: 10px;
         }
@@ -158,9 +157,7 @@
             font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
-            flex: 1 1 calc(12.5% - 10px); /* 8 כפתורים בשורה */
         }
-
 
         /* הודעת הוראות להוספת קיצור דרך */
         .instructions-modal {
@@ -225,9 +222,10 @@
                 font-size: 0.9rem;
             }
 
+            /* הקטנת כפתורי ההנחות הקבועות במסכים קטנים מאוד */
             .fixed-discounts button {
-                font-size: 0.9rem;
-                padding: 8px;
+                font-size: 0.8rem;
+                padding: 6px;
             }
         }
     </style>
@@ -324,7 +322,8 @@
             };
 
             // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
-            discountBlock.onclick = function () {
+            discountBlock.onclick = function (event) {
+                // נוודא שלא לוחצים על כפתור ה-X לפני הפעלת toggle
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
