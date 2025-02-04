@@ -141,12 +141,14 @@
             width: 100%;
         }
 
-        /* כפתורי הנחות קבועים - גריד של 8 עמודות */
+        /* כפתורי הנחות קבועים */
         .fixed-discounts {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            display: flex;
+            flex-wrap: nowrap; /* כפתורים בשורה אחת */
+            justify-content: space-between; /* מרווח שווה בין הכפתורים */
             gap: 5px;
             margin-bottom: 10px;
+            overflow-x: auto; /* גלילה אופקית אם הכפתורים לא נכנסים */
         }
 
         .fixed-discounts button {
@@ -157,6 +159,8 @@
             font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
+            flex: 1; /* כל הכפתורים יקבלו גודל שווה */
+            white-space: nowrap; /* מונע מעבר שורות בטקסט */
         }
 
         /* הודעת הוראות להוספת קיצור דרך */
@@ -222,10 +226,9 @@
                 font-size: 0.9rem;
             }
 
-            /* הקטנת כפתורי ההנחות הקבועות במסכים קטנים מאוד */
             .fixed-discounts button {
-                font-size: 0.8rem;
-                padding: 6px;
+                font-size: 0.9rem;
+                padding: 8px;
             }
         }
     </style>
@@ -288,17 +291,10 @@
 
     <script>
         let discounts = [];
-        const MAX_DISCOUNTS = 5; // מגבלה של 5 הנחות
 
         // פונקציה להוספת הנחה קבועה
         function addFixedDiscount(discountValue) {
             let discountContainer = document.getElementById('discountContainer');
-
-            // בדיקה שלא עוברים את המגבלה של 5 הנחות
-            if (discountContainer.children.length >= MAX_DISCOUNTS) {
-                alert('ניתן להוסיף עד 5 הנחות בלבד.');
-                return;
-            }
 
             // יצירת בלוק הנחה חדש
             let discountBlock = document.createElement('div');
@@ -322,8 +318,7 @@
             };
 
             // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
-            discountBlock.onclick = function (event) {
-                // נוודא שלא לוחצים על כפתור ה-X לפני הפעלת toggle
+            discountBlock.onclick = function () {
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
@@ -346,11 +341,6 @@
             let discountContainer = document.getElementById('discountContainer');
 
             // בדיקות תקינות
-            if (discountContainer.children.length >= MAX_DISCOUNTS) {
-                alert('ניתן להוסיף עד 5 הנחות בלבד.');
-                return;
-            }
-
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
                 addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו עבור הנחות קבועות
                 discountInput.value = ''; // איפוס תיבת ההזנה
