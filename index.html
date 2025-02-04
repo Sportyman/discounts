@@ -141,26 +141,36 @@
             width: 100%;
         }
 
-        /* כפתורי הנחות קבועים */
+        /* -----------------------------------------------------------------
+           כפתורי הנחות קבועים - שומרים הכל בשורה אחת, ללא גלילה ושבירה
+           ומאפשרים צמצום פונט וכפתור. 
+        ----------------------------------------------------------------- */
         .fixed-discounts {
             display: flex;
-            flex-wrap: nowrap; /* כפתורים בשורה אחת */
-            justify-content: space-between; /* מרווח שווה בין הכפתורים */
+            flex-wrap: nowrap; /* חשוב: ללא שבירת שורה */
             gap: 5px;
             margin-bottom: 10px;
-            overflow-x: auto; /* גלילה אופקית אם הכפתורים לא נכנסים */
+            overflow: hidden;  /* אין גלילה אופקית, הם מצטמצמים */
+            width: 100%;
+            box-sizing: border-box;
+            justify-content: space-between; /* או center / start וכו' */
         }
 
         .fixed-discounts button {
             background-color: #007aff;
             color: white;
             border: none;
-            padding: 10px;
-            font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
-            flex: 1; /* כל הכפתורים יקבלו גודל שווה */
-            white-space: nowrap; /* מונע מעבר שורות בטקסט */
+
+            /* העיקר: מאפשרים צמצום, עם פונט גמיש */
+            flex: 1 1 auto;       
+            min-width: 0;         /* מאפשר לרוחב להיות מתחת לגודל הטקסט */
+            white-space: nowrap;  /* הטקסט עצמו לא נשבר */
+            font-size: clamp(0.5rem, 2vw, 1rem); 
+            
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         /* הודעת הוראות להוספת קיצור דרך */
@@ -201,35 +211,32 @@
             cursor: pointer;
         }
 
-        /* Media Queries עבור מסכים קטנים מאוד */
+        /* Media Queries למקרה שרוצים שליטה נוספת במסכים ממש קטנים */
         @media (max-width: 480px) {
             .container {
                 padding: 10px;
             }
-
             input, button {
                 font-size: 0.9rem;
                 padding: 8px;
             }
-
             .final-price {
                 font-size: 1.5rem;
             }
-
             .keyboard button {
                 padding: 10px;
                 font-size: 0.9rem;
             }
-
             .shortcut-button, .reset-button {
                 padding: 10px;
                 font-size: 0.9rem;
             }
-
+            /* אפשר גם להגביל למקסימום צמצום בכפתורי ההנחות */
+            /*
             .fixed-discounts button {
-                font-size: 0.9rem;
-                padding: 8px;
+                font-size: clamp(0.4rem, 1.8vw, 0.9rem);
             }
+            */
         }
     </style>
 </head>
@@ -247,7 +254,6 @@
             <button onclick="addFixedDiscount(80)">80%</button>
         </div>
 
-        <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
         <div class="discounts">
             <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
             <button onclick="addDiscount()">הוסף הנחה</button>
@@ -318,7 +324,7 @@
             };
 
             // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
-            discountBlock.onclick = function () {
+            discountBlock.onclick = function (event) {
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
@@ -338,12 +344,10 @@
         function addDiscount() {
             let discountInput = document.getElementById('discount');
             let discountValue = parseFloat(discountInput.value);
-            let discountContainer = document.getElementById('discountContainer');
 
-            // בדיקות תקינות
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו עבור הנחות קבועות
-                discountInput.value = ''; // איפוס תיבת ההזנה
+                addFixedDiscount(discountValue);
+                discountInput.value = '';
             } else {
                 alert('אנא הזן ערך הנחה בין 0 ל-100.');
             }
