@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון הנחות עם Fit Text</title>
+    <title>מחשבון הנחות</title>
     <style>
         /* עיצוב כללי */
         body {
@@ -55,7 +55,7 @@
             align-items: center;
             cursor: pointer;
             position: relative;
-            width: calc(20% - 10px); /* גודל קבוע לכל כפתור (לכפתורי ההנחה הדינמיים) */
+            width: calc(20% - 10px); /* גודל קבוע לכל כפתור */
             box-sizing: border-box;
             justify-content: center;
         }
@@ -129,6 +129,20 @@
             cursor: pointer;
         }
 
+        .coupon-button {
+            width: 100%;
+            background-color: #ff8c42; /* צבע כתום */
+            color: white;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-decoration: none; /* הסרת קו תחתון */
+            display: block; /* הפיכת הקישור לבלוק */
+        }
+
         .reset-button {
             background-color: #ff3b30;
             color: white;
@@ -141,36 +155,25 @@
             width: 100%;
         }
 
-        /*
-         כפתורי הנחות קבועים (עכשיו עם fit-text):
-         - נשמור על display:flex ללא שבירת שורה (nowrap).
-         - בלי גלילה (overflow:hidden).
-         - כל כפתור ייקבל מחלקה .fit-text-btn כדי ש-JS יוכל לכוון את הפונט.
-        */
+        /* כפתורי הנחות קבועים */
         .fixed-discounts {
             display: flex;
-            flex-wrap: nowrap;  /* לא יורדים שורה */
+            flex-wrap: nowrap; /* כפתורים בשורה אחת */
+            justify-content: space-between; /* מרווח שווה בין הכפתורים */
             gap: 5px;
             margin-bottom: 10px;
-            overflow: hidden;   /* בלי גלילה - הם יצטמצמו */
-            width: 100%;
-            box-sizing: border-box;
-            justify-content: space-between;
         }
 
         .fixed-discounts button {
-            border: none;
-            border-radius: 5px;
             background-color: #007aff;
-            color: #fff;
-            cursor: pointer;
-            /* נגדיר padding בסיסי; JS יעשה את ההתאמה הסופית לגודל הפונט */
+            color: white;
+            border: none;
             padding: 10px;
-            /* חשוב: white-space: nowrap כדי שהטקסט לא ישבר */
-            white-space: nowrap;
-            /* flex: 1 1 auto; מאפשר לכל כפתור לגדול/להצטמצם */
-            flex: 1 1 auto;
-            box-sizing: border-box;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1; /* כל הכפתורים יקבלו גודל שווה */
+            white-space: nowrap; /* מונע מעבר שורות בטקסט */
         }
 
         /* הודעת הוראות להוספת קיצור דרך */
@@ -211,25 +214,34 @@
             cursor: pointer;
         }
 
-        /* Media Queries עבור מסכים קטנים */
+        /* Media Queries עבור מסכים קטנים מאוד */
         @media (max-width: 480px) {
             .container {
                 padding: 10px;
             }
+
             input, button {
                 font-size: 0.9rem;
                 padding: 8px;
             }
+
             .final-price {
                 font-size: 1.5rem;
             }
+
             .keyboard button {
                 padding: 10px;
                 font-size: 0.9rem;
             }
-            .shortcut-button, .reset-button {
+
+            .shortcut-button, .reset-button, .coupon-button {
                 padding: 10px;
                 font-size: 0.9rem;
+            }
+
+            .fixed-discounts button {
+                font-size: 0.9rem;
+                padding: 8px;
             }
         }
     </style>
@@ -238,28 +250,25 @@
     <div class="container">
         <!-- כפתורי הנחות קבועים -->
         <div class="fixed-discounts">
-            <!-- שים לב: הוספנו class="fit-text-btn" לכל כפתור, כדי ש-JS יטפל בהם -->
-            <button class="fit-text-btn" onclick="addFixedDiscount(10)">10%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(20)">20%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(30)">30%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(40)">40%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(50)">50%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(60)">60%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(70)">70%</button>
-            <button class="fit-text-btn" onclick="addFixedDiscount(80)">80%</button>
+            <button onclick="addFixedDiscount(10)">10%</button>
+            <button onclick="addFixedDiscount(20)">20%</button>
+            <button onclick="addFixedDiscount(30)">30%</button>
+            <button onclick="addFixedDiscount(40)">40%</button>
+            <button onclick="addFixedDiscount(50)">50%</button>
+            <button onclick="addFixedDiscount(60)">60%</button>
+            <button onclick="addFixedDiscount(70)">70%</button>
+            <button onclick="addFixedDiscount(80)">80%</button>
         </div>
 
         <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
         <div class="discounts">
-            <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100">
+            <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
             <button onclick="addDiscount()">הוסף הנחה</button>
         </div>
         <div id="discountContainer" class="discounts"></div>
-
         <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
         <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
     </div>
-
     <div class="keyboard-container">
         <button class="reset-button" onclick="resetPrice()">איפוס מחיר</button>
         <div class="keyboard">
@@ -277,6 +286,7 @@
             <button onclick="addToPrice('.')">.</button>
         </div>
         <button class="shortcut-button" onclick="showInstructions()">📲 הוסף קיצור דרך</button>
+        <a href="https://s.click.aliexpress.com/e/_oEcAHoN" class="coupon-button" target="_blank">קופונים באליאקספרס</a>
     </div>
 
     <!-- הודעת הוראות -->
@@ -322,8 +332,7 @@
             };
 
             // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
-            discountBlock.onclick = function (event) {
-                // מוודא שלא לוחצים על כפתור ה-X
+            discountBlock.onclick = function () {
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
@@ -343,11 +352,12 @@
         function addDiscount() {
             let discountInput = document.getElementById('discount');
             let discountValue = parseFloat(discountInput.value);
+            let discountContainer = document.getElementById('discountContainer');
 
-            // בדיקת תקינות
+            // בדיקות תקינות
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו הנחות קבועות
-                discountInput.value = ''; // איפוס השדה
+                addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו עבור הנחות קבועות
+                discountInput.value = ''; // איפוס תיבת ההזנה
             } else {
                 alert('אנא הזן ערך הנחה בין 0 ל-100.');
             }
@@ -396,65 +406,12 @@
             document.getElementById('instructionsModal').style.display = 'none';
         }
 
-        /* ----------------------------------------------------------------------------
-           Fit Text באמצעות חיפוש בינארי:
-           מודד עבור כל כפתור (class="fit-text-btn") את גודל הפונט המקסימלי שיכול להיכנס
-           לרוחבו (ללא שבירה) בין minFontSize ל-maxFontSize (פיקסלים).
-        ---------------------------------------------------------------------------- */
-        function fitTextToButton(buttonElement, minFontSize = 8, maxFontSize = 40) {
-            // יוצרים אלמנט מדמה למדידת רוחב הטקסט
-            const tester = document.createElement('span');
-            tester.style.position = 'absolute';
-            tester.style.visibility = 'hidden';
-            tester.style.whiteSpace = 'nowrap'; // שלא ירד שורה
-            tester.innerText = buttonElement.innerText;
-            document.body.appendChild(tester);
-
-            let low = minFontSize;
-            let high = maxFontSize;
-            let bestSize = low;
-
-            while (low <= high) {
-                let mid = Math.floor((low + high) / 2);
-
-                tester.style.fontSize = mid + 'px';
-                const textWidth = tester.offsetWidth;
-                const btnWidth = buttonElement.clientWidth;
-
-                if (textWidth <= btnWidth) {
-                    // הטקסט נכנס, מנסים להגדיל עוד
-                    bestSize = mid;
-                    low = mid + 1;
-                } else {
-                    // הטקסט חורג, נקטין
-                    high = mid - 1;
-                }
+        // פונקציה לטיפול בלחיצת ENTER בתיבת ההנחה
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addDiscount(); // הפעלת פונקציית הוספת ההנחה
             }
-
-            // מגדירים את גודל הפונט המיטבי שמצאנו
-            buttonElement.style.fontSize = bestSize + 'px';
-
-            // מנקים את המדמה
-            document.body.removeChild(tester);
         }
-
-        // התאמת כל הכפתורים עם class="fit-text-btn"
-        function fitAllButtons() {
-            const allButtons = document.querySelectorAll('.fit-text-btn');
-            allButtons.forEach(btn => fitTextToButton(btn, 8, 40));
-        }
-
-        // נפעיל את ההתאמה כשהדף נטען
-        window.addEventListener('load', fitAllButtons);
-
-        // נפעיל שוב ב-resize (עם השהיה קטנה למניעת רצף עומס)
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                fitAllButtons();
-            }, 150);
-        });
     </script>
 </body>
 </html>
