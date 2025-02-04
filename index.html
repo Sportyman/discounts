@@ -143,18 +143,23 @@
 
         /* כפתורי הנחות קבועים */
         .fixed-discounts {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2px; /* רווח קטן שמונע חריגה */
-}
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
 
-.fixed-discounts button {
-    flex: 1; /* כל הכפתורים יתפרסו שווה בשווה בכל גודל מסך */
-    max-width: 12.5%; /* מבטיח שייכנסו 8 בשורה */
-    min-width: 50px; /* מונע כיווץ יתר במסכים קטנים מאוד */
-    box-sizing: border-box; /* מוודא שהרוחב כולל padding ולא גולש */
-}
+        .fixed-discounts button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 calc(12.5% - 10px); /* 8 כפתורים בשורה */
+        }
 
 
         /* הודעת הוראות להוספת קיצור דרך */
