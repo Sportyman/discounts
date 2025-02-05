@@ -27,7 +27,7 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            margin-bottom: 10px; /* צמצום הרווחים */
+            margin: 0 auto 10px auto; /* <-- הוספנו margin: 0 auto */
         }
 
         input, button {
@@ -332,7 +332,7 @@
             };
 
             // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
-            discountBlock.onclick = function () {
+            discountBlock.onclick = function (event) {
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
