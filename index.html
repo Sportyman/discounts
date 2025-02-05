@@ -1,392 +1,398 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון הנחות</title>
-    <style>
-        /* עיצוב בסיסי לגוף העמוד */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background-color: #f4f4f4;
-            box-sizing: border-box;
-            direction: rtl;
-        }
+  <meta charset="UTF-8">
+  <!-- קו חשוב: דואג לפריסה מותאמת למסך בלי זום מוזר -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מחשבון הנחות</title>
+  <style>
+    /* עיצוב בסיסי לגוף העמוד (בלי flex ובלי margin auto) */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      box-sizing: border-box;
+      direction: rtl;
+    }
 
-        .container {
-            background: white;
-            padding: 15px; /* צמצום הרווחים */
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            margin: 0 auto 10px auto; /* מרכז אופקית + רווח תחתון */
-        }
+    .container {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      margin: 0 auto 10px; /* מרכז גם מימין ומשמאל, 10px רווח תחתון */
+    }
 
-        input, button {
-            font-size: 1rem;
-            margin: 5px 0; /* צמצום הרווחים */
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-        }
+    .keyboard-container {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto; /* מרכז את החלק התחתון */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+    }
 
-        .discounts {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start; /* הכפתורים מתחילים מימין */
-            margin-top: 10px;
-            gap: 5px;
-            direction: rtl; /* כיוון מימין לשמאל */
-        }
+    input, button {
+      font-size: 1rem;
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-        .discount-block {
-            background-color: lightblue;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-            width: calc(20% - 10px); /* גודל קבוע לכל כפתור */
-            box-sizing: border-box;
-            justify-content: center;
-        }
+    .discounts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start; /* הכפתורים מתחילים מימין */
+      margin-top: 10px;
+      gap: 5px;
+      direction: rtl; /* שומר כיוון מימין לשמאל */
+    }
 
-        .inactive {
-            background-color: lightgray;
-        }
+    .discount-block {
+      background-color: lightblue;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      width: calc(20% - 10px); /* גודל קבוע לכל כפתור */
+      box-sizing: border-box;
+      justify-content: center;
+    }
 
-        .discount-number {
-            position: absolute;
-            top: 2px;
-            left: 5px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: black;
-        }
+    .inactive {
+      background-color: lightgray;
+    }
 
-        .remove-discount {
-            background: red;
-            color: white;
-            border: none;
-            padding: 5px;
-            margin-left: 5px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 0.75rem;
-        }
+    .discount-number {
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: black;
+    }
 
-        .final-price {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 10px 0; /* צמצום הרווחים */
-        }
+    .remove-discount {
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 0.75rem;
+    }
 
-        .final-price span {
-            color: #007aff; /* צבע כחול לסכום ולסימן ₪ */
-        }
+    .final-price {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 10px 0;
+    }
 
-        .keyboard-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto; /* מרכז את החלק של המקלדת */
-            display: flex; /* משאירים flex כדי לסדר את תוכן המקלדת */
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-        }
+    .final-price span {
+      color: #007aff; /* צבע כחול לסכום ולסימן ₪ */
+    }
 
-        /* מקלדת בתצורת גריד - 3 עמודות ו-4 שורות */
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 5px;
-            width: 100%;
-        }
+    /* מקלדת בתצורת גריד - 3 עמודות ו-4 שורות */
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 5px;
+      width: 100%;
+    }
 
-        .keyboard button {
-            padding: 15px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
+    .keyboard button {
+      padding: 15px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
 
-        .shortcut-button {
-            width: 100%;
-            background-color: #007aff;
-            color: white;
-            padding: 15px;
-            font-size: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
+    .shortcut-button {
+      width: 100%;
+      background-color: #007aff;
+      color: white;
+      padding: 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
 
-        .coupon-button {
-            width: 100%;
-            background-color: #ff8c42; /* צבע כתום */
-            color: white;
-            padding: 15px;
-            font-size: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-            text-decoration: none; /* הסרת קו תחתון */
-            display: block; /* הפיכת הקישור לבלוק */
-        }
+    .coupon-button {
+      width: 100%;
+      background-color: #ff8c42; /* צבע כתום */
+      color: white;
+      padding: 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
 
-        .reset-button {
-            background-color: #ff3b30;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            width: 100%;
-        }
+    .reset-button {
+      background-color: #ff3b30;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      width: 100%;
+    }
 
-        /* כפתורי הנחות קבועים */
-        .fixed-discounts {
-            display: flex;
-            flex-wrap: nowrap; /* כפתורים בשורה אחת */
-            justify-content: space-between; /* מרווח שווה בין הכפתורים */
-            gap: 5px;
-            margin-bottom: 10px;
-        }
+    /* כפתורי הנחות קבועים */
+    .fixed-discounts {
+      display: flex;
+      flex-wrap: nowrap; /* כפתורים בשורה אחת */
+      justify-content: space-between; /* מרווח שווה בין הכפתורים */
+      gap: 5px;
+      margin-bottom: 10px;
+    }
 
-        .fixed-discounts button {
-            background-color: #007aff;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1; /* כל הכפתורים יקבלו גודל שווה */
-            white-space: nowrap; /* מונע מעבר שורות בטקסט */
-        }
+    .fixed-discounts button {
+      background-color: #007aff;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      flex: 1; /* כל הכפתורים יקבלו גודל שווה */
+      white-space: nowrap; /* מונע מעבר שורות בטקסט */
+    }
 
-        /* הודעת הוראות להוספת קיצור דרך */
-        .instructions-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    /* הודעת הוראות להוספת קיצור דרך */
+    .instructions-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
 
-        .instructions-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 300px;
-        }
+    .instructions-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+    }
 
-        .instructions-content h3 {
-            margin-top: 0;
-        }
+    .instructions-content h3 {
+      margin-top: 0;
+    }
 
-        .instructions-content ol {
-            text-align: right;
-            padding-right: 20px;
-        }
+    .instructions-content ol {
+      text-align: right;
+      padding-right: 20px;
+    }
 
-        .instructions-content button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
+    .instructions-content button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
 
-        /* Media Queries עבור מסכים קטנים מאוד */
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
-            }
-            input, button {
-                font-size: 0.9rem;
-                padding: 8px;
-            }
-            .final-price {
-                font-size: 1.5rem;
-            }
-            .keyboard button {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-            .shortcut-button, .reset-button, .coupon-button {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-            .fixed-discounts button {
-                font-size: 0.9rem;
-                padding: 8px;
-            }
-        }
-    </style>
+    /* Media Queries עבור מסכים קטנים מאוד */
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      input, button {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+
+      .final-price {
+        font-size: 1.5rem;
+      }
+
+      .keyboard button {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+
+      .shortcut-button, .reset-button, .coupon-button {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+
+      .fixed-discounts button {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- כפתורי הנחות קבועים -->
-        <div class="fixed-discounts">
-            <button onclick="addFixedDiscount(10)">10%</button>
-            <button onclick="addFixedDiscount(20)">20%</button>
-            <button onclick="addFixedDiscount(30)">30%</button>
-            <button onclick="addFixedDiscount(40)">40%</button>
-            <button onclick="addFixedDiscount(50)">50%</button>
-            <button onclick="addFixedDiscount(60)">60%</button>
-            <button onclick="addFixedDiscount(70)">70%</button>
-            <button onclick="addFixedDiscount(80)">80%</button>
-        </div>
-
-        <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
-        <div class="discounts">
-            <input type="number" id="discount" placeholder="הזינו ידנית אחוזי הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
-            <button onclick="addDiscount()">הוסיפו הנחה</button>
-        </div>
-        <div id="discountContainer" class="discounts"></div>
-        <input type="number" id="price" placeholder="הזינו מחיר" oninput="updateDiscounts()">
-        <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
+  <div class="container">
+    <!-- כפתורי הנחות קבועים -->
+    <div class="fixed-discounts">
+      <button onclick="addFixedDiscount(10)">10%</button>
+      <button onclick="addFixedDiscount(20)">20%</button>
+      <button onclick="addFixedDiscount(30)">30%</button>
+      <button onclick="addFixedDiscount(40)">40%</button>
+      <button onclick="addFixedDiscount(50)">50%</button>
+      <button onclick="addFixedDiscount(60)">60%</button>
+      <button onclick="addFixedDiscount(70)">70%</button>
+      <button onclick="addFixedDiscount(80)">80%</button>
     </div>
 
-    <div class="keyboard-container">
-        <button class="reset-button" onclick="resetPrice()">איפוס מחיר</button>
-        <div class="keyboard">
-            <button onclick="addToPrice('1')">1</button>
-            <button onclick="addToPrice('2')">2</button>
-            <button onclick="addToPrice('3')">3</button>
-            <button onclick="addToPrice('4')">4</button>
-            <button onclick="addToPrice('5')">5</button>
-            <button onclick="addToPrice('6')">6</button>
-            <button onclick="addToPrice('7')">7</button>
-            <button onclick="addToPrice('8')">8</button>
-            <button onclick="addToPrice('9')">9</button>
-            <button onclick="deleteLastDigit()">⌫</button>
-            <button onclick="addToPrice('0')">0</button>
-            <button onclick="addToPrice('.')">.</button>
-        </div>
-        <button class="shortcut-button" onclick="showInstructions()">📲 הוסיפו קיצור דרך</button>
-        <a href="https://s.click.aliexpress.com/e/_oEcAHoN" class="coupon-button" target="_blank">קופונים באליאקספרס</a>
+    <div class="discounts">
+      <input type="number" id="discount" placeholder="הזינו ידנית אחוזי הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
+      <button onclick="addDiscount()">הוסיפו הנחה</button>
     </div>
+    <div id="discountContainer" class="discounts"></div>
+    <input type="number" id="price" placeholder="הזינו מחיר" oninput="updateDiscounts()">
+    <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
+  </div>
 
-    <!-- הודעת הוראות -->
-    <div id="instructionsModal" class="instructions-modal">
-        <div class="instructions-content">
-            <h3>הוספת קיצור דרך למסך הבית</h3>
-            <ol>
-                <li>גשו להגדרות (סמל שלוש נקודות ⋮).</li>
-                <li>חפשו את האפשרות "הוספה לדף הבית".</li>
-                <li>בחרו את השם הרצוי.</li>
-                <li>אשרו את ההוספה.</li>
-            </ol>
-            <button onclick="closeInstructions()">סגור</button>
-        </div>
+  <div class="keyboard-container">
+    <button class="reset-button" onclick="resetPrice()">איפוס מחיר</button>
+    <div class="keyboard">
+      <button onclick="addToPrice('1')">1</button>
+      <button onclick="addToPrice('2')">2</button>
+      <button onclick="addToPrice('3')">3</button>
+      <button onclick="addToPrice('4')">4</button>
+      <button onclick="addToPrice('5')">5</button>
+      <button onclick="addToPrice('6')">6</button>
+      <button onclick="addToPrice('7')">7</button>
+      <button onclick="addToPrice('8')">8</button>
+      <button onclick="addToPrice('9')">9</button>
+      <button onclick="deleteLastDigit()">⌫</button>
+      <button onclick="addToPrice('0')">0</button>
+      <button onclick="addToPrice('.')">.</button>
     </div>
+    <button class="shortcut-button" onclick="showInstructions()">📲 הוסיפו קיצור דרך</button>
+    <a href="https://s.click.aliexpress.com/e/_oEcAHoN" class="coupon-button" target="_blank">קופונים באליאקספרס</a>
+  </div>
 
-    <script>
-        let discounts = [];
+  <!-- מודאל הוראות לקיצור דרך -->
+  <div id="instructionsModal" class="instructions-modal">
+    <div class="instructions-content">
+      <h3>הוספת קיצור דרך למסך הבית</h3>
+      <ol>
+        <li>גשו להגדרות (סמל שלוש נקודות ⋮).</li>
+        <li>חפשו את האפשרות "הוספה לדף הבית".</li>
+        <li>בחרו את השם הרצוי.</li>
+        <li>אשרו את ההוספה.</li>
+      </ol>
+      <button onclick="closeInstructions()">סגור</button>
+    </div>
+  </div>
 
-        function addFixedDiscount(discountValue) {
-            let discountContainer = document.getElementById('discountContainer');
-            let discountBlock = document.createElement('div');
-            discountBlock.classList.add('discount-block');
-            discountBlock.innerText = discountValue + '%';
+  <script>
+    let discounts = [];
 
-            let discountNumber = document.createElement('span');
-            discountNumber.classList.add('discount-number');
-            discountNumber.innerText = (discountContainer.children.length + 1);
-            discountBlock.appendChild(discountNumber);
+    function addFixedDiscount(discountValue) {
+      const discountContainer = document.getElementById('discountContainer');
+      const discountBlock = document.createElement('div');
+      discountBlock.classList.add('discount-block');
+      discountBlock.innerText = discountValue + '%';
 
-            let removeButton = document.createElement('button');
-            removeButton.innerText = 'X';
-            removeButton.classList.add('remove-discount');
-            removeButton.onclick = function () {
-                discountContainer.removeChild(discountBlock);
-                discounts = discounts.filter(d => d !== discountValue);
-                updateDiscounts();
-            };
+      const discountNumber = document.createElement('span');
+      discountNumber.classList.add('discount-number');
+      discountNumber.innerText = (discountContainer.children.length + 1);
+      discountBlock.appendChild(discountNumber);
 
-            discountBlock.onclick = function (event) {
-                if (event.target !== removeButton) {
-                    discountBlock.classList.toggle('inactive');
-                    updateDiscounts();
-                }
-            };
-            discountBlock.appendChild(removeButton);
+      const removeButton = document.createElement('button');
+      removeButton.innerText = 'X';
+      removeButton.classList.add('remove-discount');
+      removeButton.onclick = () => {
+        discountContainer.removeChild(discountBlock);
+        discounts = discounts.filter(d => d !== discountValue);
+        updateDiscounts();
+      };
 
-            discountContainer.appendChild(discountBlock);
-            discounts.push(discountValue);
-            updateDiscounts();
+      discountBlock.onclick = (event) => {
+        if (event.target !== removeButton) {
+          discountBlock.classList.toggle('inactive');
+          updateDiscounts();
         }
+      };
 
-        function addDiscount() {
-            let discountInput = document.getElementById('discount');
-            let discountValue = parseFloat(discountInput.value);
+      discountBlock.appendChild(removeButton);
+      discountContainer.appendChild(discountBlock);
+      discounts.push(discountValue);
+      updateDiscounts();
+    }
 
-            if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                addFixedDiscount(discountValue);
-                discountInput.value = '';
-            } else {
-                alert('אנא הזן ערך הנחה בין 0 ל-100.');
-            }
+    function addDiscount() {
+      const discountInput = document.getElementById('discount');
+      const discountValue = parseFloat(discountInput.value);
+
+      if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
+        addFixedDiscount(discountValue);
+        discountInput.value = '';
+      } else {
+        alert('אנא הזן ערך הנחה בין 0 ל-100.');
+      }
+    }
+
+    function updateDiscounts() {
+      let price = parseFloat(document.getElementById('price').value) || 0;
+      let finalPrice = price;
+
+      document.querySelectorAll('.discount-block').forEach(block => {
+        if (!block.classList.contains('inactive')) {
+          const discount = parseFloat(block.innerText.replace('%', ''));
+          finalPrice *= (1 - discount / 100);
         }
+      });
 
-        function updateDiscounts() {
-            let price = parseFloat(document.getElementById('price').value) || 0;
-            let finalPrice = price;
-            document.querySelectorAll('.discount-block').forEach(block => {
-                if (!block.classList.contains('inactive')) {
-                    let discount = parseFloat(block.innerText.replace('%', ''));
-                    finalPrice *= (1 - discount / 100);
-                }
-            });
-            document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
-        }
+      document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
+    }
 
-        function addToPrice(value) {
-            let priceInput = document.getElementById('price');
-            priceInput.value += value;
-            updateDiscounts();
-        }
+    function addToPrice(value) {
+      const priceInput = document.getElementById('price');
+      priceInput.value += value;
+      updateDiscounts();
+    }
 
-        function deleteLastDigit() {
-            let priceInput = document.getElementById('price');
-            priceInput.value = priceInput.value.slice(0, -1);
-            updateDiscounts();
-        }
+    function deleteLastDigit() {
+      const priceInput = document.getElementById('price');
+      priceInput.value = priceInput.value.slice(0, -1);
+      updateDiscounts();
+    }
 
-        function resetPrice() {
-            document.getElementById('price').value = '';
-            updateDiscounts();
-        }
+    function resetPrice() {
+      document.getElementById('price').value = '';
+      updateDiscounts();
+    }
 
-        function showInstructions() {
-            document.getElementById('instructionsModal').style.display = 'flex';
-        }
+    function showInstructions() {
+      document.getElementById('instructionsModal').style.display = 'flex';
+    }
 
-        function closeInstructions() {
-            document.getElementById('instructionsModal').style.display = 'none';
-        }
+    function closeInstructions() {
+      document.getElementById('instructionsModal').style.display = 'none';
+    }
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                addDiscount();
-            }
-        }
-    </script>
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        addDiscount();
+      }
+    }
+  </script>
 </body>
 </html>
