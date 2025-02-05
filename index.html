@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחשבון הנחות</title>
     <style>
-        /* עיצוב כללי */
+        /* עיצוב בסיסי לגוף העמוד */
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* יישור למעלה */
-            min-height: 100vh;
             margin: 0;
+            padding: 0;
+            min-height: 100vh;
             background-color: #f4f4f4;
-            padding: 0px; /* צמצום הרווחים */
             box-sizing: border-box;
+            direction: rtl;
         }
 
         .container {
@@ -27,7 +24,7 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            margin: 0 auto 10px auto; /* <-- הוספנו margin: 0 auto */
+            margin: 0 auto 10px auto; /* מרכז אופקית + רווח תחתון */
         }
 
         input, button {
@@ -97,10 +94,11 @@
         .keyboard-container {
             width: 100%;
             max-width: 400px;
-            display: flex;
+            margin: 0 auto; /* מרכז את החלק של המקלדת */
+            display: flex; /* משאירים flex כדי לסדר את תוכן המקלדת */
             flex-direction: column;
             align-items: center;
-            margin-top: 10px; /* צמצום הרווחים */
+            margin-top: 10px;
         }
 
         /* מקלדת בתצורת גריד - 3 עמודות ו-4 שורות */
@@ -219,26 +217,21 @@
             .container {
                 padding: 10px;
             }
-
             input, button {
                 font-size: 0.9rem;
                 padding: 8px;
             }
-
             .final-price {
                 font-size: 1.5rem;
             }
-
             .keyboard button {
                 padding: 10px;
                 font-size: 0.9rem;
             }
-
             .shortcut-button, .reset-button, .coupon-button {
                 padding: 10px;
                 font-size: 0.9rem;
             }
-
             .fixed-discounts button {
                 font-size: 0.9rem;
                 padding: 8px;
@@ -269,6 +262,7 @@
         <input type="number" id="price" placeholder="הזינו מחיר" oninput="updateDiscounts()">
         <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
     </div>
+
     <div class="keyboard-container">
         <button class="reset-button" onclick="resetPrice()">איפוס מחיר</button>
         <div class="keyboard">
@@ -306,22 +300,17 @@
     <script>
         let discounts = [];
 
-        // פונקציה להוספת הנחה קבועה
         function addFixedDiscount(discountValue) {
             let discountContainer = document.getElementById('discountContainer');
-
-            // יצירת בלוק הנחה חדש
             let discountBlock = document.createElement('div');
             discountBlock.classList.add('discount-block');
             discountBlock.innerText = discountValue + '%';
 
-            // הוספת מספר ההנחה בפינה השמאלית העליונה
             let discountNumber = document.createElement('span');
             discountNumber.classList.add('discount-number');
             discountNumber.innerText = (discountContainer.children.length + 1);
             discountBlock.appendChild(discountNumber);
 
-            // כפתור למחיקת ההנחה
             let removeButton = document.createElement('button');
             removeButton.innerText = 'X';
             removeButton.classList.add('remove-discount');
@@ -331,85 +320,71 @@
                 updateDiscounts();
             };
 
-            // לחיצה על הבלוק תהפוך אותו ללא פעיל או פעיל
             discountBlock.onclick = function (event) {
                 if (event.target !== removeButton) {
                     discountBlock.classList.toggle('inactive');
                     updateDiscounts();
                 }
             };
-
-            // הוספת כפתור המחיקה לבלוק ההנחה
             discountBlock.appendChild(removeButton);
 
-            // הוספת הבלוק לרשימת ההנחות
             discountContainer.appendChild(discountBlock);
             discounts.push(discountValue);
             updateDiscounts();
         }
 
-        // פונקציה להוספת הנחה ידנית
         function addDiscount() {
             let discountInput = document.getElementById('discount');
             let discountValue = parseFloat(discountInput.value);
-            let discountContainer = document.getElementById('discountContainer');
 
-            // בדיקות תקינות
             if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
-                addFixedDiscount(discountValue); // שימוש באותה פונקציה כמו עבור הנחות קבועות
-                discountInput.value = ''; // איפוס תיבת ההזנה
+                addFixedDiscount(discountValue);
+                discountInput.value = '';
             } else {
                 alert('אנא הזן ערך הנחה בין 0 ל-100.');
             }
         }
 
-        // פונקציה לעדכון המחיר הסופי
         function updateDiscounts() {
             let price = parseFloat(document.getElementById('price').value) || 0;
             let finalPrice = price;
             document.querySelectorAll('.discount-block').forEach(block => {
                 if (!block.classList.contains('inactive')) {
                     let discount = parseFloat(block.innerText.replace('%', ''));
-                    finalPrice *= (1 - discount / 100); // הנחה מצטברת
+                    finalPrice *= (1 - discount / 100);
                 }
             });
             document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
         }
 
-        // פונקציה להוספת ספרה למחיר
         function addToPrice(value) {
             let priceInput = document.getElementById('price');
             priceInput.value += value;
             updateDiscounts();
         }
 
-        // פונקציה למחיקת הספרה האחרונה
         function deleteLastDigit() {
             let priceInput = document.getElementById('price');
             priceInput.value = priceInput.value.slice(0, -1);
             updateDiscounts();
         }
 
-        // פונקציה לאיפוס המחיר
         function resetPrice() {
             document.getElementById('price').value = '';
             updateDiscounts();
         }
 
-        // פונקציה להצגת הוראות להוספת קיצור דרך
         function showInstructions() {
             document.getElementById('instructionsModal').style.display = 'flex';
         }
 
-        // פונקציה לסגירת הוראות
         function closeInstructions() {
             document.getElementById('instructionsModal').style.display = 'none';
         }
 
-        // פונקציה לטיפול בלחיצת ENTER בתיבת ההנחה
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
-                addDiscount(); // הפעלת פונקציית הוספת ההנחה
+                addDiscount();
             }
         }
     </script>
