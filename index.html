@@ -262,11 +262,11 @@
 
         <!-- הזזנו את תיבת הזנת המחיר למתחת קוביות ההנחה -->
         <div class="discounts">
-            <input type="number" id="discount" placeholder="הזן אחוז הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
-            <button onclick="addDiscount()">הוסף הנחה</button>
+            <input type="number" id="discount" placeholder="הזינו ידנית אחוזי הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
+            <button onclick="addDiscount()">הוסיפו הנחה</button>
         </div>
         <div id="discountContainer" class="discounts"></div>
-        <input type="number" id="price" placeholder="הזן מחיר" oninput="updateDiscounts()">
+        <input type="number" id="price" placeholder="הזינו מחיר" oninput="updateDiscounts()">
         <div class="final-price">מחיר סופי: <span id="finalPrice">0 ₪</span></div>
     </div>
     <div class="keyboard-container">
@@ -285,7 +285,7 @@
             <button onclick="addToPrice('0')">0</button>
             <button onclick="addToPrice('.')">.</button>
         </div>
-        <button class="shortcut-button" onclick="showInstructions()">📲 הוסף קיצור דרך</button>
+        <button class="shortcut-button" onclick="showInstructions()">📲 הוסיפו קיצור דרך</button>
         <a href="https://s.click.aliexpress.com/e/_oEcAHoN" class="coupon-button" target="_blank">קופונים באליאקספרס</a>
     </div>
 
