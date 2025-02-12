@@ -1,7 +1,7 @@
 {
   "name": "מחשבון הנחות",
   "short_name": "מחשבון הנחות",
-  "start_url": "./index.html",
+  "start_url": "./1.html",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFFFFF",
