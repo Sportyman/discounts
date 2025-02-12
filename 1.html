@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <!-- מנסה למנוע זום אוטומטי בסלולר, אם תרצה לאפשר זום ידני - הסר את user-scalable=no -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מחשבון הנחות חדש</title>
+
+  <!-- קישור ל-manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- מומלץ להגדיר צבע לטאבים בדפדפנים תומכים -->
+  <meta name="theme-color" content="#FFFFFF">
+
+  <!-- הגדרות מיוחדות ל-iOS: כך שאייקון מותאם יופיע על מסך הבית ב-Safari -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- שם שיופיע תחת האייקון ב-iOS (לא תמיד מתחשבים, אבל עוזר) -->
+  <meta name="apple-mobile-web-app-title" content="מחשבון הנחות">
+
   <style>
     /* איפוס וסגנון בסיסי */
     * {
@@ -390,7 +404,7 @@
       if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
         addFixedDiscount(discountValue);
         discountInput.value = '';
-      } 
+      }
     }
 
     // עדכון המחיר הסופי
