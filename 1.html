@@ -2,90 +2,79 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <!-- מנסה למנוע זום אוטומטי בסלולר, אם תרצה לאפשר זום ידני - הסר את user-scalable=no -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מחשבון הנחות חדש</title>
 
-  <!-- קישור ל-manifest -->
+  <!-- 1) קישור לקובץ manifest.json שנמצא באותה תיקייה של 1.html -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- מומלץ להגדיר צבע לטאבים בדפדפנים תומכים -->
+  <!-- 2) מומלץ להגדיר צבע לטאבים (theme-color) -->
   <meta name="theme-color" content="#FFFFFF">
 
-  <!-- הגדרות מיוחדות ל-iOS: כך שאייקון מותאם יופיע על מסך הבית ב-Safari -->
+  <!-- 3) תגיות ל-iOS (אייקון ושם) -->
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <!-- שם שיופיע תחת האייקון ב-iOS (לא תמיד מתחשבים, אבל עוזר) -->
   <meta name="apple-mobile-web-app-title" content="מחשבון הנחות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <style>
-    /* איפוס וסגנון בסיסי */
+    /* -- כל ה-CSS כמו בדוגמה המקורית שלך -- */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       direction: rtl;
-      overflow-x: hidden; /* מניעת גלילה אופקית אם יש חריגה קטנה */
-      margin: 0; /* אין שוליים כלל לעמוד */
+      overflow-x: hidden;
+      margin: 0;
       padding: 0;
     }
-
-    /* מיכל ראשי (תופס את כל הגובה) */
     .main-container {
       width: 100%;
       max-width: 500px;
-      margin: 0 auto;         /* מרכז רק אופקית */
-      min-height: 100vh;      /* גובה מסך מלא */
+      margin: 0 auto;
+      min-height: 100vh;
       background-color: #fff;
       display: flex;
-      flex-direction: column; /* מאפשר סידור אנכי */
-      padding: 10px;          /* רווח פנימי */
+      flex-direction: column;
+      padding: 10px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
     }
-
     h1 {
       font-size: 1.3rem;
       margin-bottom: 5px;
     }
-
-    /* כפתורי ההנחה הקבועה בשורה אחת ללא גלילה */
     .fixed-discounts {
       display: flex;
-      flex-wrap: nowrap;       /* אין מעבר שורה */
-      justify-content: space-between; /* מרווחים בין כולם */
-      gap: 5px;                /* רווח קטן בין הכפתורים */
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      gap: 5px;
       margin: 5px 0;
     }
     .fixed-discounts button {
-      flex: 1;                 /* כל כפתור מקבל חלק שווה מהרוחב */
-      min-width: 0;            /* מאפשר צמצום ככל שנדרש */
-      font-size: 0.8rem;       /* פונט קצת קטן יותר */
-      padding: 8px 0;          /* גובה פנימי */
+      flex: 1;
+      min-width: 0;
+      font-size: 0.8rem;
+      padding: 8px 0;
       border: none;
       border-radius: 5px;
       background-color: #c734c0;
       color: #fff;
       cursor: pointer;
     }
-
-    /* שדה והוספת אחוז הנחה - קודם כפתור ואז השדה */
     .discounts-manual {
       display: flex;
       gap: 5px;
       margin-bottom: 10px;
       justify-content: center;
     }
-    /* הכפתור צר יותר */
     .discounts-manual button {
-      flex: 0 0 30%;  /* כ~30% מהרוחב */
+      flex: 0 0 30%;
       padding: 8px;
       border: none;
       border-radius: 5px;
@@ -95,15 +84,13 @@
       cursor: pointer;
     }
     .discounts-manual input {
-      flex: 1;        /* השדה תופס את שאר המקום */
+      flex: 1;
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 5px;
       text-align: center;
       font-size: 1rem;
     }
-
-    /* הנחות שנבחרו */
     .discounts {
       display: flex;
       flex-wrap: wrap;
@@ -119,7 +106,7 @@
       align-items: center;
       cursor: pointer;
       position: relative;
-      width: calc(20% - 10px); /* 5 כפתורים בשורה אם יהיו הרבה */
+      width: calc(20% - 10px);
       justify-content: center;
     }
     .discount-block.inactive {
@@ -143,8 +130,6 @@
       border-radius: 50%;
       font-size: 0.75rem;
     }
-
-    /* תיבת מחיר */
     .price-input {
       margin-bottom: 10px;
     }
@@ -156,8 +141,6 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-
-    /* הצגת מחיר סופי */
     .final-price {
       font-size: 1.8rem;
       font-weight: bold;
@@ -167,8 +150,6 @@
     .final-price span {
       color: #007aff;
     }
-
-    /* איפוס מחיר */
     .reset-button {
       background-color: #ff3b30;
       color: white;
@@ -180,8 +161,6 @@
       margin-bottom: 10px;
       width: 100%;
     }
-
-    /* מקלדת מספרית */
     .keyboard {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -198,8 +177,6 @@
       background-color: #fff;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-
-    /* כפתור shortcut */
     .shortcut-button {
       width: 100%;
       background-color: #007aff;
@@ -212,8 +189,6 @@
       cursor: pointer;
       border: none;
     }
-
-    /* קופון */
     .coupon-button {
       width: 100%;
       background-color: #ff8c42;
@@ -227,8 +202,6 @@
       text-decoration: none;
       display: block;
     }
-
-    /* מודאל הוראות */
     .instructions-modal {
       display: none;
       position: fixed;
@@ -260,8 +233,6 @@
       font-size: 1rem;
       cursor: pointer;
     }
-
-    /* התאמות למסכים קטנים מאוד */
     @media (max-width: 480px) {
       .fixed-discounts button {
         font-size: 0.7rem;
@@ -289,7 +260,7 @@
   <div class="main-container">
     <h1>מחשבון הנחות</h1>
 
-    <!-- כפתורי הנחות קבועים בשורה אחת -->
+    <!-- כפתורי הנחות קבועים -->
     <div class="fixed-discounts">
       <button onclick="addFixedDiscount(10)">10%</button>
       <button onclick="addFixedDiscount(20)">20%</button>
@@ -301,7 +272,7 @@
       <button onclick="addFixedDiscount(80)">80%</button>
     </div>
 
-    <!-- כפתור הוספה ואז שדה אחוז ההנחה -->
+    <!-- הוספה ידנית -->
     <div class="discounts-manual">
       <button onclick="addDiscount()"> הוספה ידנית</button>
       <input type="number" id="discount" placeholder="הזנה ידנית של % הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
@@ -396,11 +367,10 @@
       updateDiscounts();
     }
 
-    // הוספת הנחה ידנית (כפתור "הוספה")
+    // הוספת הנחה ידנית
     function addDiscount() {
       const discountInput = document.getElementById('discount');
       const discountValue = parseFloat(discountInput.value);
-
       if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
         addFixedDiscount(discountValue);
         discountInput.value = '';
@@ -411,18 +381,16 @@
     function updateDiscounts() {
       let price = parseFloat(document.getElementById('price').value) || 0;
       let finalPrice = price;
-
       document.querySelectorAll('.discount-block').forEach(block => {
         if (!block.classList.contains('inactive')) {
           const discountVal = parseFloat(block.innerText.replace('%', ''));
           finalPrice *= (1 - discountVal / 100);
         }
       });
-
       document.getElementById('finalPrice').innerText = finalPrice.toFixed(2) + ' ₪';
     }
 
-    // הוספת ספרה למחיר (מקלדת מספרים)
+    // הוספת ספרה למחיר (מקלדת מספרית)
     function addToPrice(value) {
       const priceInput = document.getElementById('price');
       priceInput.value += value;
@@ -442,7 +410,7 @@
       updateDiscounts();
     }
 
-    // פתיחת מודאל קיצור דרך
+    // פתיחת מודאל "הוספת קיצור דרך"
     function showInstructions() {
       document.getElementById('instructionsModal').classList.add('active');
     }
