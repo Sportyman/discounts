@@ -5,6 +5,19 @@
   <!-- מנסה למנוע זום אוטומטי בסלולר, אם תרצה לאפשר זום ידני - הסר את user-scalable=no -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מחשבון הנחות חדש</title>
+
+  <!-- קישור ל-manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- מומלץ להגדיר צבע לטאבים בדפדפנים תומכים -->
+  <meta name="theme-color" content="#FFFFFF">
+
+  <!-- הגדרות מיוחדות ל-iOS: כך שאייקון מותאם יופיע על מסך הבית ב-Safari -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="מחשבון הנחות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <style>
     /* איפוס וסגנון בסיסי */
     * {
@@ -289,7 +302,7 @@
 
     <!-- כפתור הוספה ואז שדה אחוז ההנחה -->
     <div class="discounts-manual">
-      <button onclick="addDiscount()"> הוספה ידנית</button>
+      <button onclick="addDiscount()">הוספה ידנית</button>
       <input type="number" id="discount" placeholder="הזנה ידנית של % הנחה" min="0" max="100" onkeypress="handleKeyPress(event)">
     </div>
 
@@ -390,7 +403,7 @@
       if (!isNaN(discountValue) && discountValue >= 0 && discountValue <= 100) {
         addFixedDiscount(discountValue);
         discountInput.value = '';
-      } 
+      }
     }
 
     // עדכון המחיר הסופי
